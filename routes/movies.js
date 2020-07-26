@@ -1,6 +1,6 @@
 /*
 La unica responsabilidad del controlador || controller (este archivo) es saber 
-como recibe parametros y envía parametros a los servicios(carpeta services), 
+como recibe y envía los parametros a los servicios(carpeta services), 
 los servicios tienen la logica del negocio
 */
 
@@ -17,6 +17,7 @@ function moviesApi(app) {
     const { tags } = req.query;
     try {
       const movies = await moviesService.getMovies({ tags });
+
       res.status(200).json({
         data: movies,
         message: 'Movies listed',
@@ -40,11 +41,11 @@ function moviesApi(app) {
   });
 
   router.post('/', async function (req, res, next) {
-    const { body: movie } = req.body;
+    const movie = req.body;
     try {
-      const createMovieId = await moviesService.createMovie({ movie });
+      const createdMovieId = await moviesService.createMovie({ movie });
       res.status(201).json({
-        data: createMovieId,
+        data: createdMovieId,
         message: 'Movie created',
       });
     } catch (err) {
@@ -54,7 +55,7 @@ function moviesApi(app) {
 
   router.put('/:movieId', async function (req, res, next) {
     const { movieId } = req.params;
-    const { body: movie } = req.body;
+    const movie = req.body;
     try {
       const updatedMovieId = await moviesService.updateMovie({
         movieId,
@@ -63,23 +64,6 @@ function moviesApi(app) {
       res.status(200).json({
         data: updatedMovieId,
         message: 'Movie updated',
-      });
-    } catch (err) {
-      next(err);
-    }
-  });
-
-  router.patch('/:movieId', async function (req, res, next) {
-    const { movieId } = req.params;
-    const { body: movie } = req.body;
-    try {
-      const patchMovieId = await moviesService.patchMovie({
-        movieId,
-        movie,
-      });
-      res.status(200).json({
-        data: patchMovieId,
-        message: 'Movie parcially updated',
       });
     } catch (err) {
       next(err);
